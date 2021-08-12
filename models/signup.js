@@ -1,3 +1,4 @@
+require('dotenv').config()
 const mongoose = require("mongoose");
 const jwt =require('jsonwebtoken')
 const userSchema = new mongoose.Schema({
@@ -47,7 +48,7 @@ const userSchema = new mongoose.Schema({
 
 userSchema.methods.generateAuthToken= async function(){
     try {
-        const genratedtoken=jwt.sign({_id:this._id.toString()},"userRegistration&LoginAPIusingMongoAtlasandJWTToken");
+        const genratedtoken=jwt.sign({_id:this._id.toString()}, process.env.SECRET_KEY);
         this.tokens=this.tokens.concat({token:genratedtoken})
    await this.save();
         return genratedtoken;

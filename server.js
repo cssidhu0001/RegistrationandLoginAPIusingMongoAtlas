@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const bcrypt= require('bcrypt');
-const port = process.env.PORT || 5000;
+const port = process.env.PORT ;
 
 require("./db/conn");
 const User = require('./models/signup');
@@ -36,6 +36,9 @@ app.post('/signup', async(req,res)=>{
 
 const token = await newuser.generateAuthToken();
 // console.log(token);
+res.cookie("jwt",token,{
+httpOnly:true
+});
 
 
             await newuser.save();
@@ -58,6 +61,9 @@ app.post('/signin', async(req,res)=>{
         const isMatched = await bcrypt.compare(req.body.password,temp.password);
         const token = await temp.generateAuthToken();
 // console.log(token);
+res.cookie("jwt",token,{
+    httpOnly:true
+    });
         if (temp.email === req.body.email && isMatched){
             res.status(201).send("Login Successfully");    
         } else {
