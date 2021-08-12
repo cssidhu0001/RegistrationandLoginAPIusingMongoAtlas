@@ -33,6 +33,11 @@ app.post('/signup', async(req,res)=>{
                 password:hashedpassword,
                 confirmpassword:hashedconfirmpassword
             });
+
+const token = await newuser.generateAuthToken();
+// console.log(token);
+
+
             await newuser.save();
             res.status(201).send("Sign Up Sucessfull!! _ Login into Account !!");
         } else {
@@ -51,6 +56,8 @@ app.post('/signin', async(req,res)=>{
     try {
         const temp = await User.findOne({email:req.body.email});
         const isMatched = await bcrypt.compare(req.body.password,temp.password);
+        const token = await temp.generateAuthToken();
+// console.log(token);
         if (temp.email === req.body.email && isMatched){
             res.status(201).send("Login Successfully");    
         } else {
