@@ -1,8 +1,7 @@
 const mongoose = require('mongoose');
 
 // DataBase Connection
-const Dbserver= "mongodb+srv://charan:Userdb123@cluster0.ocp8t.mongodb.net/UserDb?retryWrites=true&w=majority"
-mongoose.connect( Dbserver, {
+mongoose.connect( process.env.Db, {
     useNewUrlParser:true,
     useUnifiedTopology:true,
     useCreateIndex:true,

@@ -1,6 +1,8 @@
 require('dotenv').config()
 const mongoose = require("mongoose");
-const jwt =require('jsonwebtoken')
+const bcrypt = require("bcryptjs");
+const jwt = require('jsonwebtoken');
+
 const userSchema = new mongoose.Schema({
     fname:{
         type:String,
@@ -41,22 +43,29 @@ const userSchema = new mongoose.Schema({
         token:{
             type:String,
             required:true
-        }}
-    ]
+        }
+    }]
 });
 
-
-userSchema.methods.generateAuthToken= async function(){
+//middleware
+userSchema.methods.generateAuthToken = async function(){
     try {
-        const genratedtoken=jwt.sign({_id:this._id.toString()}, process.env.SECRET_KEY);
-        this.tokens=this.tokens.concat({token:genratedtoken})
-   await this.save();
-        return genratedtoken;
+        const token = await jwt.sign({_id:this._id.toString()},process.env.SECRET_KEY);
+        this.tokens = this.tokens.concat({token}); 
+        await this.save();
+        return token;
     } catch (error) {
-
-        console.log(error);
+            res.status(500).send("yaha wala error");        
     }
 }
+
+userSchema.pre("save", async function(next){
+    if(this.isModified("password")){
+        this.password = await bcrypt.hash(this.password,10);
+        this.confirmpassword = await bcrypt.hash(this.password,10);
+    }
+    next();
+});
 
 //collection
 const User = new mongoose.model("User", userSchema);
