@@ -4,7 +4,6 @@ const app = express();
 const path = require('path');
 const bcrypt = require('bcryptjs');
 const cookieParser = require('cookie-parser');
-
 const port = process.env.PORT;
 
 require("./db/conn");

@@ -55,7 +55,7 @@ userSchema.methods.generateAuthToken = async function(){
         await this.save();
         return token;
     } catch (error) {
-            res.status(500).send("yaha wala error");        
+            res.status(500).send("Genrating JWT  Token Erorr ..!! Kindly Login Again ${error}");        
     }
 }
 
